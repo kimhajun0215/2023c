@@ -1,0 +1,50 @@
+C 언어로 가감승제를 수행하는 mymath.lib를 만들고, 해당 라이브러리를 사용하여 22와 33을 더하는 예제를 구현해보겠습니다.
+아래는 간단한 예시 코드입니다.
+1. mymath.h 헤더 파일 생성:
+#ifndef MYMATH_H
+#define MYMATH_H
+
+int add(int a, int b);
+int subtract(int a, int b);
+int multiply(int a, int b);
+int divide(int a, int b);
+
+#endif
+2. mymath.c 소스 파일 생성:
+#include "mymath.h"
+
+int add(int a, int b) {
+    return a + b;
+}
+
+int subtract(int a, int b) {
+    return a - b;
+}
+
+int multiply(int a, int b) {
+    return a * b;
+}
+
+int divide(int a, int b) {
+    if (b != 0)
+        return a / b;
+    else
+        return 0; // 에러 처리 등 필요한 로직 추가 가능
+}
+3. main.c 소스 파일 생성 및 예제 구현:
+#include <stdio.h>
+#include "mymath.h"
+
+int main() {
+    int num1 = 22;
+    int num2 = 33;
+
+    // 덧셈 예제
+    printf("%d + %d = %d\n", num1, num2, add(num1, num2));
+
+    return 0;
+}
+위의 코드에서는 mymath.h 헤더 파일에 가감승제 함수들의 선언을 작성하고
+(add, subtract, multiply, divide), mymath.c 소스 파일에서 해당 함수들의 정의를 작성합니다.
+그리고 main.c 소스 파일에서는 add() 함수를 호출하여 22와 33을 더한 결과를 출력합니다.
+위 코드들을 컴파일하고 실행하면 "22 + 33 = 55"가 출력됩니다.
