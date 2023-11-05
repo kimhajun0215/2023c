@@ -34,3 +34,82 @@ void draw() {
     if (m.indexOf("0")==0) background(0, 255, 0); // 0이면 초록색
   }
 }
+
+아두이노 코드 /
+#include <Wire.h>
+
+const int tempSensorPin = A0;
+const int lightSensorPin = A1;
+
+void setup() {
+  Wire.begin();
+  Serial.begin(9600);
+}
+
+void loop() {
+  static unsigned long lastMillis = 0;
+  unsigned long currentMillis = millis();
+
+  if (currentMillis - lastMillis >= 1000) {
+    float temperature = readTemperature();
+    float lightIntensity = readLightIntensity();
+    sendSensorData(temperature, lightIntensity);
+    lastMillis = currentMillis;
+  }
+}
+
+float readTemperature() {
+
+  float temperature = random(20, 30);
+  return temperature;
+}
+
+float readLightIntensity() {
+
+  float lightIntensity = analogRead(lightSensorPin);
+  return lightIntensity;
+}
+
+void sendSensorData(float temperature, float lightIntensity) {
+  Wire.beginTransmission(0x04);
+  Wire.write('T');
+  Wire.write((byte *)&temperature, sizeof(temperature));
+  Wire.write('L');
+  Wire.write((byte *)&lightIntensity, sizeof(lightIntensity));
+  Wire.endTransmission();
+
+  Serial.print("Data sent: T=");
+  Serial.print(temperature, 2);
+  Serial.print("°C, L=");
+  Serial.print(lightIntensity, 2);
+  Serial.println();
+}
+
+프로세싱 코드 / 
+Serial arduino;
+String receivedData = "Temperature: 0.00°C\nLight Intensity: 0";
+
+void setup() {
+  size(400, 200);
+  server = new Server(this, 12345);
+  arduino = new Serial(this, "COM6", 9600);
+  arduino.bufferUntil('\n');
+}
+
+void draw() {
+  background(255);
+  Client client = server.available();
+
+  if (client != null) {
+    client.write(receivedData);
+    client.stop();
+  }
+}
+
+void serialEvent(Serial port) {
+  String data = port.readString();
+  if (data != null) {
+    receivedData = trim(data);
+   
+  }
+}
